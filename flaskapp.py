@@ -1,3 +1,4 @@
+```python
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import sqlite3
 import os
@@ -6,7 +7,7 @@ app = Flask(__name__)
 
 
 def get_db_connection():
-    conn = sqlite3.connect("kansakri.db")
+    conn = sqlite3.connect("/var/www/flaskapp/kansakri.db")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -52,7 +53,11 @@ def profile(username):
 
     conn.close()
 
-    return render_template("profile.html", user=user, word_count=None)
+    return render_template(
+        "profile.html",
+        user=user,
+        word_count=None
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -86,9 +91,9 @@ def upload_file(username):
     file = request.files["file"]
 
     if file and file.filename:
-        
+
         filename = "Limerick (1).txt"
-        upload_folder = "uploads"
+        upload_folder = "/var/www/flaskapp/uploads"
 
         os.makedirs(upload_folder, exist_ok=True)
 
@@ -123,11 +128,16 @@ def upload_file(username):
 def download_file():
 
     return send_from_directory(
-        "uploads",
+        "/var/www/flaskapp/uploads",
         "Limerick (1).txt",
         as_attachment=True
     )
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(
+        host="0.0.0.0",
+        port=5000,
+        debug=True
+    )
+```
